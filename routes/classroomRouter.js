@@ -1,10 +1,8 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
 const router = express.Router();
 const classModel = require("../models/Class");
 
-app.use(cors());
 router.get("/vacant/:day", async (req, res) => {
   const { day } = req.params;
   try {

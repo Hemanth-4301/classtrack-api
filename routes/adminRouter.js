@@ -2,15 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const app = express();
 const adminRouter = express.Router();
 const adminModel = require("../models/Admins");
 const jwt = require("jsonwebtoken");
 dotenv.config();
 const secretKey = process.env.secret_Key;
 const bcrypt = require("bcrypt");
-
-app.use(cors());
 
 adminRouter.get("/get", async (req, res) => {
   try {

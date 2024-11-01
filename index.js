@@ -16,7 +16,12 @@ app.use(
     credentials: true,
   })
 );
-app.options("*", cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 
 mongoose.connect(process.env.dbUrl);
 

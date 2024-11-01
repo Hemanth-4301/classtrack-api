@@ -16,6 +16,7 @@ app.use(
     credentials: true,
   })
 );
+app.options("*", cors());
 
 mongoose.connect(process.env.dbUrl);
 

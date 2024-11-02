@@ -9,15 +9,9 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://classsroom-tracker.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
-mongoose.connect(process.env.dbUrl);
+mongoose.connect(process.env.URL);
 
 app.use("/admins", adminRouter);
 app.use("/classrooms", classroomRouter);

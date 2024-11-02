@@ -17,7 +17,10 @@ app.use(
   })
 );
 
-mongoose.connect(process.env.URL);
+mongoose
+  .connect(process.env.URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log(err));
 
 app.use("/admins", adminRouter);
 app.use("/classrooms", classroomRouter);

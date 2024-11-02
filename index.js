@@ -9,7 +9,13 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://nie-classtrack.vercel.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Allow credentials
+  })
+);
 
 mongoose.connect(process.env.URL);
 

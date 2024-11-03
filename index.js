@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: ["https://nie-classtrack.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // Allow credentials
+    credentials: true, 
   })
 );
 

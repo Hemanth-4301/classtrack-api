@@ -19,24 +19,6 @@ adminRouter.get("/get", async (req, res) => {
 });
 
 adminRouter.post("/find", async (req, res) => {
-  const createMasterAdmin = async () => {
-    try {
-      const master = await adminModel.findOne({ email: process.env.email });
-      if (!master) {
-        const hashedPassword = await bcrypt.hash(process.env.password, 10);
-        await adminModel.create({
-          name: process.env.name,
-          email: process.env.email,
-          password: hashedPassword,
-        });
-      }
-    } catch (error) {
-      console.error("Error creating master admin:", error);
-    }
-  };
-
-  await createMasterAdmin();
-
   const { email, password } = req.body;
   try {
     const admin = await adminModel.findOne({ email });

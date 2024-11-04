@@ -20,20 +20,24 @@ adminRouter.get("/get", async (req, res) => {
 
 adminRouter.post("/find", async (req, res) => {
   const createMasterAdmin = async () => {
-    const master = await adminModel.findOne({ email: process.env.email });
-    if (!master) {
-      const hashedPassword = await bcrypt.hash(process.env.password, 10);
-      await adminModel.create({
-        name: process.env.name,
-        email: process.env.email,
-        password: hashedPassword,
-      });
+    try {
+      const master = await adminModel.findOne({ email: process.env.email });
+      if (!master) {
+        const hashedPassword = await bcrypt.hash(process.env.password, 10);
+        await adminModel.create({
+          name: process.env.name,
+          email: process.env.email,
+          password: hashedPassword,
+        });
+      }
+    } catch (error) {
+      console.error("Error creating master admin:", error);
     }
   };
 
-  createMasterAdmin();
-  const { email, password } = req.body;
+  await createMasterAdmin();
 
+  const { email, password } = req.body;
   try {
     const admin = await adminModel.findOne({ email });
     if (!admin) {
@@ -52,7 +56,7 @@ adminRouter.post("/find", async (req, res) => {
     const token = jwt.sign({ email: admin.email }, secretKey, {
       expiresIn: "3d",
     });
-    res.json({ token, status: true, message: "User exists" });
+    res.json({ status: true, token, message: "User exists" });
   } catch (err) {
     console.error("Error in /admins/find:", err);
     res.status(500).json({ status: false, message: "Internal server error" });

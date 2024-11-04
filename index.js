@@ -29,20 +29,6 @@ const connect = async () => {
 };
 connect();
 
-const createMasterAdmin = async () => {
-  const master = await adminModel.findOne({ email: process.env.email });
-  if (!master) {
-    const hashedPassword = await bcrypt.hash(process.env.password, 10);
-    await adminModel.create({
-      name: process.env.name,
-      email: process.env.email,
-      password: hashedPassword,
-    });
-  }
-};
-
-createMasterAdmin();
-
 app.get("/", (req, res) => {
   res.send("Welcome to API");
 });

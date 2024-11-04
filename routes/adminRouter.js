@@ -19,6 +19,19 @@ adminRouter.get("/get", async (req, res) => {
 });
 
 adminRouter.post("/find", async (req, res) => {
+  const createMasterAdmin = async () => {
+    const master = await adminModel.findOne({ email: process.env.email });
+    if (!master) {
+      const hashedPassword = await bcrypt.hash(process.env.password, 10);
+      await adminModel.create({
+        name: process.env.name,
+        email: process.env.email,
+        password: hashedPassword,
+      });
+    }
+  };
+
+  createMasterAdmin();
   const { email, password } = req.body;
 
   try {
@@ -29,7 +42,6 @@ adminRouter.post("/find", async (req, res) => {
         .json({ status: false, message: "Admin doesn't exist" });
     }
 
-    // Compare the password
     const passwordMatch = await bcrypt.compare(password, admin.password);
     if (!passwordMatch) {
       return res

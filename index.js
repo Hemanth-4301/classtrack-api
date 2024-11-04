@@ -17,10 +17,16 @@ app.use(
   })
 );
 
-mongoose
-  .connect(process.env.URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+const connect = async () => {
+  await mongoose
+    .connect(process.env.URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.log(err));
+};
+connect();
 
 app.get("/", (req, res) => {
   res.send("Welcome to API");

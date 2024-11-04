@@ -11,9 +11,9 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://nie-classtrack.vercel.app"],
+    origin: ["https://nie-classtrack.vercel.app",],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, 
+    credentials: true,
   })
 );
 

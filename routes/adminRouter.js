@@ -19,38 +19,31 @@ adminRouter.get("/get", async (req, res) => {
 });
 
 adminRouter.post("/find", async (req, res) => {
-  const createAdmin = async () => {
-    const master = await adminModel.findOne({ email: process.env.email });
-    if (!master) {
-      const hashedPassword = await bcrypt.hash(process.env.password, 10);
-      await adminModel.create({
-        name: process.env.name,
-        email: process.env.email,
-        password: hashedPassword,
-      });
-    }
-  };
-
-  await createAdmin();
-
   const { email, password } = req.body;
+
   try {
     const admin = await adminModel.findOne({ email });
-    if (admin) {
-      const passwordMatch = await bcrypt.compare(password, admin.password);
-      if (passwordMatch) {
-        const token = jwt.sign({ email: admin.email }, secretKey, {
-          expiresIn: "3d",
-        });
-        return res.json({ token, status: true, message: "User exists" });
-      } else {
-        return res.json({ status: false, message: "Password is incorrect" });
-      }
-    } else {
-      return res.json({ status: false, message: "Admin doesn't exist" });
+    if (!admin) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Admin doesn't exist" });
     }
+
+    // Compare the password
+    const passwordMatch = await bcrypt.compare(password, admin.password);
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ status: false, message: "Password is incorrect" });
+    }
+
+    const token = jwt.sign({ email: admin.email }, secretKey, {
+      expiresIn: "3d",
+    });
+    res.json({ token, status: true, message: "User exists" });
   } catch (err) {
-    res.status(500).json({ status: false, message: err.message });
+    console.error("Error in /admins/find:", err);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 });
 

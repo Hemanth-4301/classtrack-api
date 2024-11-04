@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const adminRouter = require("./routes/adminRouter");
 const classroomRouter = require("./routes/classroomRouter");
+const adminModel=require("./models/Admins.js")
 
 dotenv.config();
 
@@ -27,6 +28,20 @@ const connect = async () => {
     .catch((err) => console.log(err));
 };
 connect();
+
+const createMasterAdmin = async () => {
+  const master = await adminModel.findOne({ email: process.env.email });
+  if (!master) {
+    const hashedPassword = await bcrypt.hash(process.env.password, 10);
+    await adminModel.create({
+      name: process.env.name,
+      email: process.env.email,
+      password: hashedPassword,
+    });
+  }
+};
+
+createMasterAdmin();
 
 app.get("/", (req, res) => {
   res.send("Welcome to API");

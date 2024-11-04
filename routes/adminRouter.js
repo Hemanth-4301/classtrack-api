@@ -6,7 +6,7 @@ const adminRouter = express.Router();
 const adminModel = require("../models/Admins");
 const jwt = require("jsonwebtoken");
 dotenv.config();
-const secretKey = process.env.secret_Key;
+const secretKey = process.env.secret_key;
 const bcrypt = require("bcrypt");
 
 adminRouter.get("/get", async (req, res) => {

@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://nie-classtrack.vercel.app",],
+    origin: ["https://nie-classtrack.vercel.app"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -21,6 +21,10 @@ mongoose
   .connect(process.env.URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
+
+app.get("/", (req, res) => {
+  res.send("Welcome to API");
+});
 
 app.use("/admins", adminRouter);
 app.use("/classrooms", classroomRouter);

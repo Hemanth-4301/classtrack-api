@@ -160,17 +160,18 @@ rooms.forEach((room) => {
   });
 });
 
+const BATCH_SIZE = 1000; 
+
 router.post("/insertAll", async (req, res) => {
   try {
-    await Promise.all(
-      documents.map((doc) =>
-        classModel.updateOne(
-          { day: doc.day, duration: doc.duration, roomNumber: doc.roomNumber },
-          { $setOnInsert: doc },
-          { upsert: true }
-        )
-      )
-    );
+    const promises = [];
+    for (let i = 0; i < documents.length; i += BATCH_SIZE) {
+      const batch = documents.slice(i, i + BATCH_SIZE);
+      promises.push(classModel.insertMany(batch, { ordered: false }));
+    }
+
+    await Promise.all(promises);
+
     res.json({ message: "All classrooms inserted as vacant where necessary." });
   } catch (error) {
     console.error("Error while inserting classrooms:", error);

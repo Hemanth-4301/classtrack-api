@@ -26,22 +26,29 @@ router.get("/get", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   const { day, duration, roomNumber, location, vacant } = req.body;
-
-  const newClassroom = new classModel({
-    day,
-    duration,
-    roomNumber,
-    location,
-    vacant,
-  });
-
   try {
-    const savedClassroom = await newClassroom.save();
-    res.status(201).json({ message: "data saved" });
+    const updatedClassroom = await classModel.findOneAndUpdate(
+      { day, duration, roomNumber },
+      { $set: { vacant } }, 
+      { new: true, upsert: false } 
+    );
+    if (!updatedClassroom) {
+      const newClassroom = new classModel({
+        day,
+        duration,
+        roomNumber,
+        location,
+        vacant,
+      });
+      await newClassroom.save();
+      return res.status(201).json({ message: "Classroom added" });
+    }
+    res.status(200).json({ message: "Classroom updated" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to add classroom", error: err });
+    res.status(500).json({ message: "Failed to add or update classroom", error: err });
   }
 });
+
 
 router.put("/update/:id", async (req, res) => {
   const { day, duration, roomNumber, location, vacant } = req.body;

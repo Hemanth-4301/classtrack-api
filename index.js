@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const adminRouter = require("./routes/adminRouter");
 const classroomRouter = require("./routes/classroomRouter");
-const adminModel=require("./models/Admins.js")
+const adminModel = require("./models/Admins.js");
 
 dotenv.config();
 
@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://nie-classtrack.vercel.app"],
+    origin: ["https://nie-classtrack.vercel.app", "http:localhost:3001"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

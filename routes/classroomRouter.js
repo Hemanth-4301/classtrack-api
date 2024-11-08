@@ -160,7 +160,7 @@ rooms.forEach((room) => {
   });
 });
 
-router.get("/insertAll", async (req, res) => {
+router.post("/insertAll", async (req, res) => {
   try {
     for (const doc of documents) {
       await classModel.updateOne(
@@ -179,7 +179,7 @@ router.get("/insertAll", async (req, res) => {
     }
     res.json({ message: "All classrooms inserted as vacant where necessary." });
   } catch (error) {
-    res.status(500).json({ message: "Failed to insert classrooms", error });
+    res.status(500).json({ message: error });
   }
 });
 

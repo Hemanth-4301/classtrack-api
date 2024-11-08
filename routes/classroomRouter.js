@@ -173,7 +173,17 @@ router.post("/insertAll", async (req, res) => {
     );
     res.json({ message: "All classrooms inserted as vacant where necessary." });
   } catch (error) {
-    console.error("Error inserting classrooms:", error);
+    console.error("Error while inserting classrooms:", error);
+    res.status(500).json({ message: "Failed to insert classrooms", error });
+  }
+});
+
+router.post("/deleteAll", async (req, res) => {
+  try {
+    await classModel.deleteMany();
+    res.json({ message: "All classrooms got deleted" });
+  } catch (error) {
+    console.error("Error while deleteting classrooms:", error);
     res.status(500).json({ message: "Failed to insert classrooms", error });
   }
 });

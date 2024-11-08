@@ -162,24 +162,19 @@ rooms.forEach((room) => {
 
 router.post("/insertAll", async (req, res) => {
   try {
-    for (const doc of documents) {
-      await classModel.updateOne(
-        { day: doc.day, duration: doc.duration, roomNumber: doc.roomNumber },
-        {
-          $setOnInsert: {
-            day: doc.day,
-            duration: doc.duration,
-            roomNumber: doc.roomNumber,
-            vacant: doc.vacant,
-            location: doc.location,
-          },
-        },
-        { upsert: true }
-      );
-    }
+    await Promise.all(
+      documents.map((doc) =>
+        classModel.updateOne(
+          { day: doc.day, duration: doc.duration, roomNumber: doc.roomNumber },
+          { $setOnInsert: doc },
+          { upsert: true }
+        )
+      )
+    );
     res.json({ message: "All classrooms inserted as vacant where necessary." });
   } catch (error) {
-    res.status(500).json({ message: error });
+    console.error("Error inserting classrooms:", error);
+    res.status(500).json({ message: "Failed to insert classrooms", error });
   }
 });
 

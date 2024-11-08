@@ -28,9 +28,13 @@ router.post("/add", async (req, res) => {
   const { day, duration, roomNumber, location, vacant } = req.body;
   try {
     const updatedClassroom = await classModel.findOneAndUpdate(
-      { day, duration, roomNumber },
-      { $set: { vacant } }, 
-      { new: true, upsert: false } 
+      {
+        day,
+        duration,
+        roomNumber: { $regex: new RegExp(`^${roomNumber}$`, "i") },
+      },
+      { $set: { vacant } },
+      { new: true, upsert: false }
     );
     if (!updatedClassroom) {
       const newClassroom = new classModel({
@@ -45,10 +49,11 @@ router.post("/add", async (req, res) => {
     }
     res.status(200).json({ message: "Classroom updated" });
   } catch (err) {
-    res.status(500).json({ message: "Failed to add or update classroom", error: err });
+    res
+      .status(500)
+      .json({ message: "Failed to add or update classroom", error: err });
   }
 });
-
 
 router.put("/update/:id", async (req, res) => {
   const { day, duration, roomNumber, location, vacant } = req.body;
@@ -167,7 +172,7 @@ rooms.forEach((room) => {
   });
 });
 
-const BATCH_SIZE = 1000; 
+const BATCH_SIZE = 1000;
 
 router.post("/insertAll", async (req, res) => {
   try {

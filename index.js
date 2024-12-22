@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["https://nie-classtrack.vercel.app", "http://localhost:3000"],
+    origin: ["https://nie-classtrack.vercel.app", "http:localhost:3001"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })

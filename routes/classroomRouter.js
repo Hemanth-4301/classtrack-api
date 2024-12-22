@@ -89,6 +89,31 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// Search classrooms endpoint
+router.get("/search", async (req, res) => {
+  const { roomNumber } = req.query;
+
+  if (!roomNumber) {
+    return res.status(400).json({ message: "Room number is required" });
+  }
+
+  try {
+    const normalizedRoomNumber = roomNumber.trim().toUpperCase();
+    const classrooms = await classModel.find({
+      roomNumber: { $regex: new RegExp(`^${normalizedRoomNumber}$`, "i") },
+    });
+
+    if (!classrooms.length) {
+      return res.status(404).json({ message: "No vacant slots found" });
+    }
+
+    res.json({ data: classrooms });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 const rooms = [
   { roomNumber: "107", location: "Ground floor" },
   { roomNumber: "108", location: "Ground floor" },

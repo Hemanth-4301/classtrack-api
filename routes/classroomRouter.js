@@ -114,6 +114,27 @@ router.get("/search", async (req, res) => {
   }
 });
 
+
+
+// Endpoint to search classrooms by time
+router.get("/searchByTime", async (req, res) => {
+  const { duration } = req.query;
+
+  if (!duration) {
+    return res.status(400).json({ error: "Time duration is required." });
+  }
+
+  try {
+    const classrooms = await classModel.find({ duration, vacant: true });
+    res.json(classrooms);
+  } catch (error) {
+    console.error("Error fetching classrooms:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+});
+
+
+
 const rooms = [
   { roomNumber: "107", location: "Ground floor" },
   { roomNumber: "108", location: "Ground floor" },

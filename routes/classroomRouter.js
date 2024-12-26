@@ -114,26 +114,29 @@ router.get("/search", async (req, res) => {
   }
 });
 
-
-
-// Endpoint to search classrooms by time
-router.get("/searchByTime", async (req, res) => {
-  const { duration } = req.query;
-
-  if (!duration) {
-    return res.status(400).json({ error: "Time duration is required." });
-  }
+router.get("/searchByTimeAndDay", async (req, res) => {
+  const { duration, day } = req.query;
 
   try {
-    const classrooms = await classModel.find({ duration, vacant: true });
+    if (day === "Saturday" || day === "Sunday") {
+      // Return all classrooms as vacant
+      const classrooms = await Classroom.find({}, "roomNumber location");
+      return res.json(classrooms);
+    }
+
+    // For other days, filter based  time and day
+    const classrooms = await classModel.find({
+      day,
+      duration,
+      vacant: true,
+    });
+
     res.json(classrooms);
   } catch (error) {
-    console.error("Error fetching classrooms:", error);
-    res.status(500).json({ error: "Internal server error." });
+    console.error(error);
+    res.status(500).json({ error: "Error fetching classrooms." });
   }
 });
-
-
 
 const rooms = [
   { roomNumber: "107", location: "Ground floor" },
